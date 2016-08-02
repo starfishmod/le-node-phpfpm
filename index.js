@@ -95,19 +95,20 @@ phpfpm.prototype.run = function(info, cb)
 		info.uri = ms[1];
 	}
 
+
+
 	var phpfile = info.uri;
 	if (!phpfile.match(/^\//)) phpfile = this.options.documentRoot + phpfile;
 
-
-	// Default server vars
-	var fastcgiParams = info.fastcgiParams || {
+	var HELLOWORLD_PARAMS = 
+	{
 		QUERY_STRING: info.queryString || '',
 		REQUEST_METHOD: info.method,
 		CONTENT_TYPE: info.contentType || '',
 		CONTENT_LENGTH: info.contentLength || '',
-		SCRIPT_FILENAME: phpfile,
-		SCRIPT_NAME: phpfile.split('/').pop(),
-		REQUEST_URI: info.uri,
+		SCRIPT_FILENAME: this.options.documentRoot + phpfile,
+		SCRIPT_NAME: phpfile,
+		REQUEST_URI: info.reqUri,
 		DOCUMENT_URI: phpfile,
 		DOCUMENT_ROOT: this.options.documentRoot,
 		SERVER_PROTOCOL: 'HTTP/1.1',
@@ -116,16 +117,23 @@ phpfpm.prototype.run = function(info, cb)
 		REMOTE_PORT: 1234,
 		SERVER_ADDR: '127.0.0.1',
 		SERVER_PORT: 80,
-		SERVER_NAME: '127.0.0.1',
+		SERVER_NAME: info.serverName,
 		SERVER_SOFTWARE: 'node-phpfpm',
-		REDIRECT_STATUS: 200
+		REDIRECT_STATUS: 200,
 	};
 
+	if(info.httpHeaders){
+		for(var header in info.httpHeaders) {
+			var headerName = header.toUpperCase().replace(/-/g, '_');
+			HELLOWORLD_PARAMS['HTTP_' + headerName] = info.httpHeaders[header];
+		}
+	}
 
 	var self = this;
 
-	self.client.request(fastcgiParams, function(err, request)
+	self.client.request(HELLOWORLD_PARAMS, function(err, request)
 	{
+
 		if (err)
 		{
 			cb(99, err.toString(), err.toString());
@@ -145,13 +153,13 @@ phpfpm.prototype.run = function(info, cb)
 		
 		request.stdout.on('end', function()
 		{
-			body = body.replace(/^[\s\S]*?\r\n\r\n/, '');
+			//body = body.replace(/^[\s\S]*?\r\n\r\n/, '');
 			cb(false, body, errors);
 		});
 
 		if (info.method == 'POST')
 		{
-			request.stdin._write(info.body, 'utf8');
+	 		request.stdin._write(info.body, 'utf8');
 		}
 		request.stdin.end();
 	});
