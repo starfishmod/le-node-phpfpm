@@ -14,6 +14,8 @@ function phpfpm(options)
 	!options.host && (options.host = '127.0.0.1');
 	!options.port && (options.port = 9000);
 	!options.documentRoot && (options.documentRoot = '');
+	!options.serverAddr && (options.serverAddr = '127.0.0.1');
+	!options.serverPort && (options.serverAddr = 80);
 
 	this.options = options;
 	var self = this;
@@ -64,7 +66,7 @@ phpfpm.prototype.run = function(info, cb)
 	if (info.form && info.method == 'GET')
 	{
 		info.body = '';
-		var qs = urlencode(info.form);;
+		var qs = urlencode(info.form);
 		info.uri += (info.uri.indexOf('?') === -1) ? '?' + qs : '&' + qs;
 	}
 
@@ -98,26 +100,29 @@ phpfpm.prototype.run = function(info, cb)
 
 
 	var phpfile = info.uri;
-	if (!phpfile.match(/^\//)) phpfile = this.options.documentRoot + phpfile;
+	if (!phpfile.match(/^\//)){
+		var scriptFilename = this.options.documentRoot + phpfile;
+		phpfile = '/' + phpfile;
+	}
 
-	var HELLOWORLD_PARAMS = 
+	var FASTCGI_REQ_HEADERS =
 	{
 		QUERY_STRING: info.queryString || '',
 		REQUEST_METHOD: info.method,
 		CONTENT_TYPE: info.contentType || '',
 		CONTENT_LENGTH: info.contentLength || '',
-		SCRIPT_FILENAME: this.options.documentRoot + phpfile,
+		SCRIPT_FILENAME: scriptFilename,
 		SCRIPT_NAME: phpfile,
-		REQUEST_URI: info.reqUri,
+		REQUEST_URI: info.reqUri || info.uri,
 		DOCUMENT_URI: phpfile,
 		DOCUMENT_ROOT: this.options.documentRoot,
 		SERVER_PROTOCOL: 'HTTP/1.1',
 		GATEWAY_INTERFACE: 'CGI/1.1',
 		REMOTE_ADDR: '127.0.0.1',
 		REMOTE_PORT: 1234,
-		SERVER_ADDR: '127.0.0.1',
-		SERVER_PORT: 80,
-		SERVER_NAME: info.serverName,
+		SERVER_ADDR: this.options.serverAddr,
+		SERVER_PORT: this.options.serverPort,
+		SERVER_NAME: info.serverName || this.options.serverAddr,
 		SERVER_SOFTWARE: 'node-phpfpm',
 		REDIRECT_STATUS: 200,
 	};
@@ -125,13 +130,15 @@ phpfpm.prototype.run = function(info, cb)
 	if(info.httpHeaders){
 		for(var header in info.httpHeaders) {
 			var headerName = header.toUpperCase().replace(/-/g, '_');
-			HELLOWORLD_PARAMS['HTTP_' + headerName] = info.httpHeaders[header];
+			FASTCGI_REQ_HEADERS['HTTP_' + headerName] = info.httpHeaders[header];
 		}
+
+		info.sendHttpHeaders = true;
 	}
 
 	var self = this;
 
-	self.client.request(HELLOWORLD_PARAMS, function(err, request)
+	self.client.request(FASTCGI_REQ_HEADERS, function(err, request)
 	{
 
 		if (err)
@@ -140,7 +147,7 @@ phpfpm.prototype.run = function(info, cb)
 			return;
 		}
 
-		var body = '',errors = '';
+		var output = '', errors = '', body = '', headers = {};
 		request.stdout.on('data', function(data)
 		{
 			body += data.toString('utf8');
@@ -153,8 +160,26 @@ phpfpm.prototype.run = function(info, cb)
 		
 		request.stdout.on('end', function()
 		{
-			//body = body.replace(/^[\s\S]*?\r\n\r\n/, '');
-			cb(false, body, errors);
+			var headersString = body.match(/(^[\s\S]*?)\r\n\r\n/)[1];
+
+			body = body.substr(headersString.length + 4); //remove headers and \r\n characters
+
+			if(info.sendHttpHeaders){
+				var headersArray = headersString.split('\r\n'),
+					headersObj = {};
+				headersArray.map(function (header) {
+					var delimiter = header.indexOf(':');
+					headersObj[header.substr(0, delimiter)] = header.substr(delimiter + 2);
+				});
+
+				headers = headersObj;
+
+				output = { headers : headers, body : body };
+			} else {
+				output = body;
+			}
+
+			cb(false, output, errors);
 		});
 
 		if (info.method == 'POST')

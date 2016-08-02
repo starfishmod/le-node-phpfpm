@@ -1,10 +1,10 @@
-# node-phpfpm
+# http-node-phpfpm
 node.js run php scripts via phpfpm
 
-[![NPM](https://nodei.co/npm/node-phpfpm.png?downloads=true&stars=true)](https://www.npmjs.com/package/node-phpfpm)
+[![NPM](https://nodei.co/npm/http-node-phpfpm.png?downloads=true&stars=true)](https://www.npmjs.com/package/http-node-phpfpm)
 
 ```
-npm install node-phpfpm
+npm install http-node-phpfpm
 ```
 
 ## Usage
@@ -242,8 +242,7 @@ echo file_get_contents('php://input');
 MIT
 
 ## Thanks
-
-This project is based on the great work of `node-fastcgi-client` written by LastLeaf. [LastLeaf/node-fastcgi-client](https://github.com/LastLeaf/node-fastcgi-client)
+This project is based on the great work of `node-phpfpm` written by longbill. [longbill/node-phpfpm](https://github.com/longbill/node-phpfpm) and `node-fastcgi-client` written by LastLeaf. [LastLeaf/node-fastcgi-client](https://github.com/LastLeaf/node-fastcgi-client)
 
 ## Links
 

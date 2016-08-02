@@ -1,7 +1,7 @@
 {
-  "name": "node-phpfpm",
+  "name": "http-node-phpfpm",
   "version": "1.0.1",
-  "description": "nodejs run php scripts via phpfpm",
+  "description": "Use Node.js as proxy to PHP or as phpfpm client",
   "main": "index.js",
   "dependencies": {
     "fastcgi-client": "0.0.1",
@@ -13,42 +13,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/longbill/node-phpfpm.git"
+    "url": "https://github.com/lfoma/http-node-phpfpm.git"
   },
   "keywords": [
     "nodejs",
     "php",
     "phpfpm",
-    "php-fpm"
+    "php-fpm",
+    "proxy",
+    "http",
+    "fastcgi"
   ],
   "author": {
-    "name": "Chunlong"
+    "name": "lfoma"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/longbill/node-phpfpm/issues"
-  },
-  "homepage": "https://github.com/longbill/node-phpfpm",
-  "gitHead": "c578e58a0a199b69b2451951822b53866c24a7a9",
-  "_id": "node-phpfpm@1.0.1",
-  "_shasum": "306ab881349b890632f0debd4aa3d3423d0c53c6",
-  "_from": "node-phpfpm@latest",
-  "_npmVersion": "2.14.2",
-  "_nodeVersion": "4.0.0",
-  "_npmUser": {
-    "name": "longbill",
-    "email": "longbill.cn@gmail.com"
-  },
-  "dist": {
-    "shasum": "306ab881349b890632f0debd4aa3d3423d0c53c6",
-    "tarball": "https://registry.npmjs.org/node-phpfpm/-/node-phpfpm-1.0.1.tgz"
-  },
-  "maintainers": [
-    {
-      "name": "longbill",
-      "email": "longbill.cn@gmail.com"
-    }
-  ],
-  "directories": {},
-  "_resolved": "https://registry.npmjs.org/node-phpfpm/-/node-phpfpm-1.0.1.tgz"
+    "url": "https://github.com/lfoma/http-node-phpfpm/issues"
+  }
 }
