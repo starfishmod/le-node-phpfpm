@@ -14,8 +14,8 @@ function phpfpm(options)
 	!options.host && (options.host = '127.0.0.1');
 	!options.port && (options.port = 9000);
 	!options.documentRoot && (options.documentRoot = '');
-	!options.serverAddr && (options.serverAddr = '127.0.0.1');
-	!options.serverPort && (options.serverAddr = 80);
+	!options.headerServerAddr && (options.serverAddr = '127.0.0.1');
+	!options.headerServerPort && (options.serverAddr = 80);
 
 	this.options = options;
 	var self = this;
@@ -120,8 +120,8 @@ phpfpm.prototype.run = function(info, cb)
 		GATEWAY_INTERFACE: 'CGI/1.1',
 		REMOTE_ADDR: '127.0.0.1',
 		REMOTE_PORT: 1234,
-		SERVER_ADDR: this.options.serverAddr,
-		SERVER_PORT: this.options.serverPort,
+		SERVER_ADDR: this.options.headerServerAddr,
+		SERVER_PORT: this.options.headerServerPort,
 		SERVER_NAME: info.serverName || this.options.serverAddr,
 		SERVER_SOFTWARE: 'node-phpfpm',
 		REDIRECT_STATUS: 200,
@@ -174,7 +174,7 @@ phpfpm.prototype.run = function(info, cb)
 
 				headers = headersObj;
 
-				output = { headers : headers, body : body };
+				output = { status: parseInt(headers['Status']), headers : headers, body : body };
 			} else {
 				output = body;
 			}

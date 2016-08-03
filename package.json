@@ -1,6 +1,6 @@
 {
   "name": "http-node-phpfpm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Use Node.js as proxy to PHP or as phpfpm client",
   "main": "index.js",
   "dependencies": {
