@@ -1,6 +1,6 @@
 {
-  "name": "http-node-phpfpm",
-  "version": "1.0.2",
+  "name": "le-node-phpfpm",
+  "version": "1.0.0",
   "description": "Use Node.js as proxy to PHP or as phpfpm client",
   "main": "index.js",
   "dependencies": {
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lfoma/http-node-phpfpm.git"
+    "url": "https://github.com/agesora/le-node-phpfpm.git"
   },
   "keywords": [
     "nodejs",
@@ -25,10 +25,10 @@
     "fastcgi"
   ],
   "author": {
-    "name": "lfoma"
+    "name": "agesora"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lfoma/http-node-phpfpm/issues"
+    "url": "https://github.com/agesora/le-node-phpfpm/issues"
   }
 }

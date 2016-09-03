@@ -1,16 +1,15 @@
-# http-node-phpfpm
+# le-node-phpfpm
 node.js run php scripts via phpfpm
 
-[![NPM](https://nodei.co/npm/http-node-phpfpm.png?downloads=true&stars=true)](https://www.npmjs.com/package/http-node-phpfpm)
 
 ```
-npm install http-node-phpfpm
+npm install agesora/le-node-phpfpm
 ```
 
 ## Usage
 
 ```js
-var PHPFPM = require('node-phpfpm');
+var PHPFPM = require('le-node-phpfpm');
 
 var phpfpm = new PHPFPM(
 {
@@ -39,7 +38,7 @@ configObject may have the following keys:
 * `documentRoot` optional [string] the document root folder of PHP scripts. must ends with /
 * `host` optional [string] the ip or host name of php-fpm server (default: 127.0.0.1)
 * `port` optional [int] the port of php-fpm server ( default: 9000 )
-* `sockFile` optional [string] use the unix sock file instead of 127.0.0.1:9000 to connect php-fpm server 
+* `sockFile` optional [string] use the unix sock file instead of 127.0.0.1:9000 to connect php-fpm server
 
 
 ## APIs
@@ -52,11 +51,12 @@ available keys in options object
 * `uri` [string] path to your phpfile
 * `url` <optinal> [string] alias of uri
 * `method` optional [string] GET or POST (default: GET)
-* `form` optional [object] form_data that will be send with content-type: application/x-www-form-urlencoded 
-* `json` optional [object] json data that will be send with content-type: application/json 
+* `form` optional [object] form_data that will be send with content-type: application/x-www-form-urlencoded
+* `json` optional [object] json data that will be send with content-type: application/json
 * `body` optional [string] raw post body data
 * `contentType` optional [string] the content-type header
 * `contentLength` optional [string] the content-length header
+* `httpHeaders` optional [string] the header
 
 
 if you send a string as `options`, it will be converted to:
@@ -70,17 +70,17 @@ callback
 ```js
 function(err, output, phpErrors)
 {
-	// if err === 99, means php-fpm error 
+	// if err === 99, means php-fpm error
 	// it may be lost php-fpm connection or too many connections
 	// otherwise it will always equal to false
-	
+
 	// output is the stdout of php scripts
-	
+
 	// phpErrors is the php errors detail string
 	// php will output some errors, but that does not mean the request fails
 	// if you turn on display_errors in your php.ini, the phpErrors content will also be found in the output string
-	
-	console.log(err, output, phpErrors); 
+
+	console.log(err, output, phpErrors);
 }
 ```
 
@@ -122,7 +122,7 @@ Send form data via POST method
 phpfpm.run(
 {
 	uri: 'test.php',
-	form: 
+	form:
 	{
 		a:'a',
 		b:'b'
@@ -148,7 +148,7 @@ Send json data with POST method
 phpfpm.run(
 {
 	uri: 'test.php',
-	json: 
+	json:
 	{
 		a:'a',
 		b:'b'
@@ -171,7 +171,7 @@ phpfpm.run(
 {
 	uri: 'test2.php',
 	method: 'GET',
-	form: 
+	form:
 	{
 		a:'a',
 		b:'b'
@@ -198,7 +198,7 @@ phpfpm.run(
 {
 	uri: 'test2.php?c=cc',
 	method: 'GET',
-	form: 
+	form:
 	{
 		a:'a',
 		b:'b'
