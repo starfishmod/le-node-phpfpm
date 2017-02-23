@@ -96,9 +96,10 @@ phpfpm.prototype.run = function(info, cb) {
 
     var phpfile = info.uri;
     if (!phpfile.match(/^\//)) {
-        var scriptFilename = this.options.documentRoot + phpfile;
+       
         phpfile = '/' + phpfile;
     }
+    var scriptFilename = this.options.documentRoot + phpfile;
 
     var FASTCGI_REQ_HEADERS = {
         QUERY_STRING: info.queryString || '',
@@ -127,7 +128,7 @@ phpfpm.prototype.run = function(info, cb) {
             FASTCGI_REQ_HEADERS['HTTP_' + headerName] = info.httpHeaders[header];
         }
 
-        info.sendHttpHeaders = false;
+        info.sendHttpHeaders = true;
     }
 
     var self = this;
