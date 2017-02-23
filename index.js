@@ -125,7 +125,11 @@ phpfpm.prototype.run = function(info, cb) {
     if (info.httpHeaders) {
         for (var header in info.httpHeaders) {
             var headerName = header.toUpperCase().replace(/-/g, '_');
-            FASTCGI_REQ_HEADERS['HTTP_' + headerName] = info.httpHeaders[header];
+            if(FASTCGI_REQ_HEADERS[headerName]){
+	            FASTCGI_REQ_HEADERS[headerName] = info.httpHeaders[header];
+            }else{
+	            FASTCGI_REQ_HEADERS['HTTP_' + headerName] = info.httpHeaders[header];
+            }
         }
 
         info.sendHttpHeaders = true;
